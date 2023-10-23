@@ -1,5 +1,4 @@
 import './App.css'
-
 import React, { Component } from 'react';
 
 class Stopwatch extends Component {
@@ -7,7 +6,9 @@ class Stopwatch extends Component {
     super(props);
     this.state = {
       isRunning: false,
-      elapsed: 0,
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
     };
     this.interval = null;
   }
@@ -17,7 +18,17 @@ class Stopwatch extends Component {
       clearInterval(this.interval);
     } else {
       this.interval = setInterval(() => {
-        this.setState({ elapsed: this.state.elapsed + 1 });
+        let { hours, minutes, seconds } = this.state;
+        seconds++;
+        if (seconds === 60) {
+          seconds = 0;
+          minutes++;
+          if (minutes === 60) {
+            minutes = 0;
+            hours++;
+          }
+        }
+        this.setState({ hours, minutes, seconds });
       }, 1000);
     }
     this.setState({ isRunning: !this.state.isRunning });
@@ -27,15 +38,23 @@ class Stopwatch extends Component {
     clearInterval(this.interval);
     this.setState({
       isRunning: false,
-      elapsed: 0,
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
     });
   };
 
   render() {
+    const { hours, minutes, seconds } = this.state;
+
     return (
       <div className="stopwatch">
         <h1>Stopwatch</h1>
-        <div className="time">{this.state.elapsed} seconds</div>
+        <div className="time">
+          <span className="time-section">Hours: {hours}</span>
+          <span className="time-section">Minutes: {minutes}</span>
+          <span className="time-section">Seconds: {seconds}</span>
+        </div>
         <div className="controls">
           <button onClick={this.handleStartStop}>
             {this.state.isRunning ? 'Stop' : 'Start'}
@@ -56,4 +75,6 @@ function App() {
 }
 
 export default App;
+
+
 
